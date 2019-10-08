@@ -1,12 +1,12 @@
-# Liferay Frontend Samples, Tips and Utilities
+# Liferay Front-end samples, tips and utilities
 
-> Some useful kick-starter boilerplates, tips and files to improve GS Frontend Development and Liferay content configuration.
+> Some useful kick-starter tips and files in order to improve GS Front-end Development and Liferay content configuration.
 
 ---
 
 ## ADTs
 
-A list of the [most common used ADTs for Asset Publishers](adts/) and how to set them up.
+A list of the [most commonly used ADTs](adts/) and how to set them up.
 
 ## Templates
 
