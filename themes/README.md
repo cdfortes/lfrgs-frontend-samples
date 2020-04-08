@@ -26,14 +26,16 @@
 * [Freemarker Samples](#freemarker-samples)
 * [Freemarker useful variables](#freemarker-useful-variables)
 * [Language in Freemarker](#language-in-freemarker)
+* [Freemarker useful macros](#freemarker-useful-macros)
 
 ---
+
+## Themes
 
 ### Theme Boilerplates
 
 * [AngularJS theme example](https://github.com/clovisdasilvaneto/Liferay-AngularJs-Theme)
 
----
 
 ### Creating a theme
 
@@ -94,8 +96,6 @@ gulp status
 gulp init
 ```
 
----
-
 ### Gulp Utilities
 
 #### Configuring theme deploy to Nexus
@@ -140,25 +140,77 @@ gulp.task('deploy:artifacts', ['build'], function(callback) {
 gulp deploy:artifacts
 ```
 
----
-
 ### Embed Liferay portlets in theme
 
-> Typically these codes are embeded inside _portal-normal.ftl_ or other theme ftls inside _templates_ theme folder.
+> Typically these codes are embeded inside _portal-normal.ftl_ or other theme freemarkers files inside _templates_ theme folder.
 
 * [Embed Search Portlet](examples/embed-search-portlet.ftl)
 * [Embed Breadcrumb Portlet](examples/embed-breadcrumb-portlet.ftl)
 * [Embed User Toolbar](examples/embed-user-toolbar.ftl)
+* [Embed Journal Article](examples/embed-journal-article.ftl)
 
----
 
 ### Embed a Custom Portlet in theme
 
 * [Embed a custom portlet in theme](examples/embed-custom-portlet.ftl)
 
+
+### Theme Settings
+
+In order to understand more about theme settings, checkt out the [Liferay Theme Settings Docs](https://dev.liferay.com/develop/tutorials/-/knowledge_base/7-0/making-themes-configurable-with-settings).
+
+#### Get checkbox theme setting as a boolean
+
+In `liferay-look-and-feel.xml` , create the settting <setttings> as a checkbox:
+
+```freemarker
+<setting configurable="true" key="show-main-search" type="checkbox" value="true" />
+```
+
+In `WEB-INF/src/content/Language.properties` create the key value for this theme setting.
+
+In `init_custom.ftl` file, assign the variable getting as boolean:
+
+```freemarker
+<#--  Show Search  -->
+<#assign show_main_search = getterUtil.getBoolean(theme_settings["show-main-search"])>
+```
+
+To validate the variable, create somthing like this in your FTL files:
+
+```freemarker
+<#if show_main_search>
+...
+</#if>
+```
+
+### JS Theme Utilities
+
+> Get Language keys in your JS files
+```js
+Liferay.Language.get("language-key")
+```
+
+### SCSS Linter
+
+A pre-configured SCSS Linter file to improve your SCSS writing with good practices.
+Just copy and paste the `scss-lint.yml` file into your theme root folder.
+
+> FYI: You need to install the [scss-lint](https://github.com/brigade/scss-lint).
+
+#### Installing SCSS linter on VSCode
+
+* Install the *required ruby gem* below:
+
+```bash
+sudo gem install scss_lint
+```
+
+* Install *scss-lint* Extension on VSCode.
+
 ---
 
-### Freemarker
+## Freemarker
 
 #### Freemarker samples
 
@@ -252,61 +304,31 @@ list-one-column-dark
 
 > FYI: You can create a **Language.properties** file in the following folder of your theme: **WEB-INF > src > content**
 
----
+#### Freemarker useful macros
 
-### Theme Settings
-
-In order to understand more about theme settings, checkt out the [Liferay Theme Settings Docs](https://dev.liferay.com/develop/tutorials/-/knowledge_base/7-0/making-themes-configurable-with-settings).
-
-#### Get checkbox theme setting as a boolean
-
-In `liferay-look-and-feel.xml` , create the settting <setttings> as a checkbox:
-
+> Truncate Text
 ```freemarker
-<setting configurable="true" key="show-main-search" type="checkbox" value="true" />
+<#--  Truncate Text  -->
+  <#macro truncate_text text limit>
+
+    <#assign truncatedText = "" />
+
+    <#if text?length gt limit>
+
+      <#assign truncatedText = text?substring(0,limit)/>
+      <#assign truncatedText += "..."/>
+
+      ${truncatedText}
+
+    <#else>
+
+      ${text}
+
+    </#if>
+
+  </#macro>
+
+<#--  Call Macro  -->
+<#assign title = curEntry.getTitle(locale)/>
+<@truncate_text text=title limit=100 />
 ```
-
-In `WEB-INF/src/content/Language.properties` create the key value for this theme setting.
-
-In `init_custom.ftl` file, assign the variable getting as boolean:
-
-```freemarker
-<#--  Show Search  -->
-<#assign show_main_search = getterUtil.getBoolean(theme_settings["show-main-search"])>
-```
-
-To validate the variable, create somthing like this in your FTL files:
-
-```freemarker
-<#if show_main_search>
-...
-</#if>
-```
-
----
-
-### JS Theme Utilities
-
-> Get Language keys in your JS files
-```js
-Liferay.Language.get("language-key")
-```
-
----
-
-### SCSS Linter
-
-A pre-configured SCSS Linter file to improve your SCSS writing with good practices.
-Just copy and paste the `scss-lint.yml` file into your theme root folder.
-
-> FYI: You need to install the [scss-lint](https://github.com/brigade/scss-lint).
-
-#### Installing SCSS linter on VSCode
-
-* Install the *required ruby gem* below:
-
-```bash
-sudo gem install scss_lint
-```
-
-* Install *scss-lint* Extension on VSCode.
